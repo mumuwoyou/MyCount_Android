@@ -207,6 +207,12 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                 checkCameraPermissions();
                 break;
 
+            case R.id.menu_place:
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, PlaceActivity.class);
+                startActivity(intent);
+                break;
+
             case R.id.menu_adb_update:
 
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {

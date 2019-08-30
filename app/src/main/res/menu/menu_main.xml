@@ -7,6 +7,11 @@
         app:showAsAction="collapseActionView"></item>
 
     <item
+        android:id="@+id/menu_place"
+        android:title="储位设置"
+        app:showAsAction="collapseActionView"></item>
+
+    <item
         android:id="@+id/menu_adb_update"
         android:title="Adb上传"
         app:showAsAction="collapseActionView"></item>

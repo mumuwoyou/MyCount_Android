@@ -170,7 +170,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0"
             android:text="盘点合计：" />
-sum
+
         <TextView
             android:id="@+id/sum_value"
             android:layout_width="wrap_content"
