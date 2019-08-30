@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_scan"
+        android:title="扫码"
+        app:showAsAction="collapseActionView"></item>
+
+    <item
+        android:id="@+id/menu_adb_update"
+        android:title="Adb上传"
+        app:showAsAction="collapseActionView"></item>
+    <item
+        android:id="@+id/menu_adb_download"
+        android:title="Adb下载"
+        app:showAsAction="collapseActionView"></item>
+</menu>

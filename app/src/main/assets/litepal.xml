@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<litepal>
+    <dbname value="testdb" ></dbname>
+
+    <version value="6" ></version>
+
+    <list>
+        <mapping class="com.mumuwoyou.mycount.app.dbmodel.GoodsModel"></mapping>
+        <mapping class="com.mumuwoyou.mycount.app.dbmodel.StockModel"></mapping>
+        <mapping class="com.mumuwoyou.mycount.app.dbmodel.DetailModel"></mapping>
+        <mapping class="com.mumuwoyou.mycount.app.dbmodel.PlaceModel"></mapping>
+    </list>
+</litepal>
