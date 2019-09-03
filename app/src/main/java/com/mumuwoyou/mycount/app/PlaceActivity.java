@@ -51,7 +51,7 @@ public class PlaceActivity extends AppCompatActivity {
                 for(int i=0;i<parent.getCount();i++) {
                     View v = parent.getChildAt(i);
                     if (position == i) {
-                        v.setBackgroundResource(R.color.yellow);//点击选择变色
+                        v.setBackgroundResource(R.color.colorPrimary);//点击选择变色
                         place_select = (PlaceModel)parent.getAdapter().getItem(position);
                     }
                     else {

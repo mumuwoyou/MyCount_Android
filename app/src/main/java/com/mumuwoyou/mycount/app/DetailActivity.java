@@ -1,6 +1,8 @@
 package com.mumuwoyou.mycount.app;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.king.zxing.CaptureActivity;
@@ -34,6 +37,7 @@ public class DetailActivity extends AppCompatActivity {
     private List<StockModel> stockList;
     private List<PlaceModel> placeList;
     private List<DetailModel> detailList;
+    private List<DetailModel> detail_have;
 
     private TextView sum_value;
 
@@ -41,18 +45,21 @@ public class DetailActivity extends AppCompatActivity {
     private ArrayList<DetailModel> detailModels;
     private DetailAdapter adapter;
 
+    private DetailModel detail;
     private DetailModel detail_select;
+
+    private AlertDialog.Builder builder;
     ComboBox comboBox;
     EditText countEdit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        Button addButton = (Button)findViewById(R.id.add);
-        Button deleteButton = (Button)findViewById(R.id.delete);
+//        Button addButton = (Button)findViewById(R.id.add);
+//        Button deleteButton = (Button)findViewById(R.id.delete);
         countEdit = (EditText)findViewById(R.id.count_value);
-        addButton.setOnClickListener(ButtonListener);
-        deleteButton.setOnClickListener(ButtonListener);
+//        addButton.setOnClickListener(ButtonListener);
+//        deleteButton.setOnClickListener(ButtonListener);
 
         initData();
         initView();
@@ -112,7 +119,7 @@ public class DetailActivity extends AppCompatActivity {
                 for(int i=0;i<parent.getCount();i++) {
                     View v = parent.getChildAt(i);
                     if (position == i) {
-                        v.setBackgroundResource(R.color.yellow);//点击选择变色
+                        v.setBackgroundResource(R.color.colorPrimary);//点击选择变色
                         detail_select = (DetailModel)parent.getAdapter().getItem(position);
                     }
                     else {
@@ -132,58 +139,83 @@ public class DetailActivity extends AppCompatActivity {
         stock.setSum(result);
         stock.update(stock.getId());//更新库存表
     }
-    //按钮的点击处理
-    Button.OnClickListener ButtonListener = new Button.OnClickListener() {
 
-        @Override
-        public void onClick(View v) {
+    public void onClick(View v) {
 
-            switch (v.getId()) {
-                case R.id.add:
-                    DetailModel detail = new DetailModel();
-                    detail.setPlace(comboBox.getSelectedEntry());
-                    detail.setCount(Integer.parseInt(countEdit.getText().toString()));
-                    detail.setStockmodel(stockList.get(0));
-                    List<DetailModel> detail_have = LitePal//是否有同样储位的数据存在。
-                            .where("stockmodel_id = ? and place = ?",
-                                    Integer.toString(stockList.get(0).getId()),
-                                    comboBox.getSelectedEntry())
-                            .find(DetailModel.class);
+        switch (v.getId()) {
+            case R.id.add:
+                detail = new DetailModel();
+                detail.setPlace(comboBox.getSelectedEntry());
+                detail.setCount(Integer.parseInt(countEdit.getText().toString()));
+                detail.setStockmodel(stockList.get(0));
+                detail_have = LitePal//是否有同样储位的数据存在。
+                        .where("stockmodel_id = ? and place = ?",
+                                Integer.toString(stockList.get(0).getId()),
+                                comboBox.getSelectedEntry())
+                        .find(DetailModel.class);
 
-                    if (detail_have.size() > 0) {//有则更新，无则添加
-                        detail.update(detail_have.get(0).getId());
-                        detailList = LitePal
-                                .where("stockmodel_id = ?",
-                                        Integer.toString(stockList.get(0).getId()))
-                                .find(DetailModel.class);
-                        detailModels.clear();
-                        detailModels.addAll(detailList);
-                    }else
-                    {
-                        detail.save();
-                        detailModels.add(detail);
-                    }
+                if (detail_have.size() > 0) {//有则更新，无则添加
+                    //弹出更新对话框
+                    builder=new AlertDialog.Builder(this);
+                    builder.setIcon(R.mipmap.ic_launcher);
+                    builder.setTitle(R.string.update);
+                    builder.setMessage("确定要更新"+comboBox.getSelectedEntry()+"的库存吗？");
+
+                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            detail.update(detail_have.get(0).getId());
+                            detailList = LitePal
+                                    .where("stockmodel_id = ?",
+                                            Integer.toString(stockList.get(0).getId()))
+                                    .find(DetailModel.class);
+                            Sum();
+                            detailModels.clear();
+                            detailModels.addAll(detailList);
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+
+                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                        }
+                    });
+
+                    builder.setCancelable(true);
+                    AlertDialog dialog=builder.create();
+                    dialog.show();
+
+                }else
+                {
+                    detail.save();
                     Sum();
+                    detailModels.add(detail);
                     adapter.notifyDataSetChanged();
+                }
 
-                    break;
-                case R.id.delete:   //删除选择的数据。
-                    if (detail_select !=null)
-                    {
-                        detail_select.delete();
-                        detailList = LitePal
-                                .where("stockmodel_id = ?",
-                                        Integer.toString(stockList.get(0).getId()))
-                                .find(DetailModel.class);
-                        Sum();
-                        detailModels.clear();
-                        detailModels.addAll(detailList);
-                        adapter.notifyDataSetChanged();
-                    }
-                    break;
 
-            }
+                break;
+            case R.id.delete:   //删除选择的数据。
+                if (detail_select !=null)
+                {
+                    detail_select.delete();
+                    detailList = LitePal
+                            .where("stockmodel_id = ?",
+                                    Integer.toString(stockList.get(0).getId()))
+                            .find(DetailModel.class);
+                    Sum();
+                    detailModels.clear();
+                    detailModels.addAll(detailList);
+                    adapter.notifyDataSetChanged();
+                }
+                break;
 
         }
-    };
+
+    }
+
+    //按钮的点击处理
+
+
 }

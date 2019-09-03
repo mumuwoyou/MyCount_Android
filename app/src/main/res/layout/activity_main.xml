@@ -1,28 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
-    android:layout_height="657dp"
-    android:layout_marginBottom="55dp"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
     tools:context=".MainActivity">
 
-    <include layout="@layout/header_view" />
-
-    <ListView
-        android:id="@+id/lv_stock"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="617dp"/>
+        android:layout_height="match_parent"
+        android:layout_marginBottom="55dp"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <include layout="@layout/header_view" />
+
+        <ListView
+            android:id="@+id/lv_stock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </ListView>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_scan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
+        android:layout_marginBottom="20dp"
+        android:onClick="onClick"
+        android:text="扫码"
+        android:textColor="#E8183FCC"
+        android:textSize="18sp" />
+
+</RelativeLayout>
 
 
 

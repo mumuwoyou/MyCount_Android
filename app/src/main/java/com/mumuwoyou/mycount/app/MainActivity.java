@@ -12,7 +12,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +28,7 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 import com.mumuwoyou.mycount.app.adapter.StockAdapter;
+import com.mumuwoyou.mycount.app.dbmodel.DetailModel;
 import com.mumuwoyou.mycount.app.dbmodel.StockModel;
 import com.mumuwoyou.mycount.app.util.FileUtils;
 
@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         lv_stock = findViewById(R.id.lv_stock);
         stockModels = new ArrayList<>();
         adapter = new StockAdapter(stockModels);
@@ -121,6 +122,17 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     }
 
+    public void onClick(View v) {
+        isContinuousScan = false;
+        switch (v.getId()) {
+            case R.id.btn_scan:
+                this.cls = CustomCaptureActivity.class;
+                this.title = ((Button) v).getText().toString();
+                checkCameraPermissions();
+                break;
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -152,6 +164,8 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private Context getContext(){
         return this;
     }
+
+
 
 
 
@@ -202,10 +216,6 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_scan:
-                this.cls = CustomCaptureActivity.class;
-                checkCameraPermissions();
-                break;
 
             case R.id.menu_place:
                 Intent intent = new Intent();
@@ -240,6 +250,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                         }
                     }
                 }
+                refreshData();
                 break;
 
 

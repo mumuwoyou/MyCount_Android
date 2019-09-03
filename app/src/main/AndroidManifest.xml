@@ -10,9 +10,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PlaceActivity"></activity>
-        <activity android:name=".DetailActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".PlaceActivity"
+            android:label="储位设置"></activity>
+        <activity android:name=".DetailActivity"
+            android:label="盘点明细"/>
+        <activity android:name=".MainActivity"
+            android:label="库存">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
