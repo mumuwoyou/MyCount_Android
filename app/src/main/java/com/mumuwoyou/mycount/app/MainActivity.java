@@ -1,9 +1,12 @@
 package com.mumuwoyou.mycount.app;
 
 import android.Manifest;
-import android.content.ClipData;
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
@@ -18,10 +21,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.king.zxing.CaptureActivity;
 import com.king.zxing.Intents;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -69,10 +70,13 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private ArrayList<StockModel> stockModels;
     private StockAdapter adapter;
 
-
     private Class<?> cls;
     private String title;
     private boolean isContinuousScan;
+
+    private MyBroadcastReceiver myBroadCastReceiver;
+
+    private AlertDialog.Builder builder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +104,20 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             }
         });
 
+        myBroadCastReceiver= new MyBroadcastReceiver();
+        IntentFilter intentFiltet = new IntentFilter();
+        //设置广播的名字（设置Action，可以添加多个要监听的动作）
+        intentFiltet.addAction("BROADCAST_ACTION_PC_PUSHED");
+        intentFiltet.addAction("BROADCAST_ACTION_PC_PULLING");
+        intentFiltet.addAction("BROADCAST_ACTION_PC_PULLED");
+        //注册广播,传入两个参数， 实例化的广播接受者对象，intent 动作筛选对象
+        registerReceiver(myBroadCastReceiver,intentFiltet);
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
+            }
+        }
     }
 
     @Override
@@ -120,6 +138,78 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             adapter.notifyDataSetChanged();
         }
 
+    }
+
+
+
+    private class MyBroadcastReceiver extends BroadcastReceiver {
+
+        public void onReceive(Context context, Intent intent) {
+//            Toast.makeText(context, "收到自定义的广播", 1).show();
+            if (intent.getAction().equals("BROADCAST_ACTION_PC_PUSHED")) {
+                DownloadData();
+            }
+            if (intent.getAction().equals("BROADCAST_ACTION_PC_PULLING")) {
+                UploadData();
+            }
+            if (intent.getAction().equals("BROADCAST_ACTION_PC_PULLED")) {
+                Toast.makeText(context, "盘点数据已上传", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    private void DownloadData()
+    {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
+            }else{
+                builder=new AlertDialog.Builder(this);
+                builder.setIcon(R.mipmap.ic_launcher);
+                builder.setTitle(R.string.update);
+                builder.setMessage("确定已上传盘点数据，要更新数据库吗？");
+
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (copyDbFromPublicDirectory()) {
+                            Toast.makeText(getContext(), "更新数据库完成", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(getContext(), "更新数据库失败", Toast.LENGTH_SHORT).show();
+                        }
+                        refreshData();
+                    }
+
+                });
+
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getContext(), "已取消更新数据库", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                builder.setCancelable(true);
+                AlertDialog dialog=builder.create();
+                dialog.show();
+
+            }
+        }
+    }
+
+    private void UploadData(){
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
+            }else{
+                if (copyDbToPublicDirectory()) {
+                    Toast.makeText(this, "Adb上传数据准备就绪", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(this, "Adb上传数据准备失败", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 
     public void onClick(View v) {
@@ -222,36 +312,14 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                 intent.setClass(MainActivity.this, PlaceActivity.class);
                 startActivity(intent);
                 break;
+//            case R.id.menu_updatedb:
+//                DownloadData();
+//                break;
+//            case R.id.menu_uploaddb:
+//                UploadData();
+//                break;
 
-            case R.id.menu_adb_update:
 
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                    if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
-                    }else{
-                        if (copyDbToPublicDirectory()) {
-                            Toast.makeText(this, "Adb上传数据准备就绪", Toast.LENGTH_SHORT).show();
-                        }else{
-                            Toast.makeText(this, "Adb上传数据准备失败", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-                break;
-            case R.id.menu_adb_download:
-
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                    if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
-                    }else{
-                        if (copyDbFromPublicDirectory()) {
-                            Toast.makeText(this, "下载数据完成", Toast.LENGTH_SHORT).show();
-                        }else{
-                            Toast.makeText(this, "下载数据失败", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-                refreshData();
-                break;
 
 
         }
@@ -275,11 +343,12 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    if (copyDbToPublicDirectory()) {
-                        Toast.makeText(this, "Adb上传数据准备就绪", Toast.LENGTH_SHORT).show();
-                    }else{
-                        Toast.makeText(this, "Adb上传数据准备失败", Toast.LENGTH_SHORT).show();
-                    };
+//                    if (copyDbToPublicDirectory()) {
+//                        Toast.makeText(this, "Adb上传数据准备就绪", Toast.LENGTH_SHORT).show();
+//                    }else{
+//                        Toast.makeText(this, "Adb上传数据准备失败", Toast.LENGTH_SHORT).show();
+//                    };
+
                 } else {
 
                     // permission denied, boo! Disable the
@@ -353,7 +422,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
      */
     public boolean copyDbFromPublicDirectory() {
         boolean success = false;
+
         try {
+            LitePal.deleteDatabase("testdb");
             File documentDir = Environment.getExternalStorageDirectory();
             //pc端推送的地址
             String saveDir = documentDir.getAbsolutePath() + "/" + packageName + "/" + "dbfiles" + "/" + DB_NAME;

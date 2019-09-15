@@ -6,5 +6,6 @@
     <string name="qr_code">二维码</string>
     <string name="bar_code">条形码</string>
     <string name="update">更新</string>
+    <string name="updatedb">更新数据库</string>
 
 </resources>

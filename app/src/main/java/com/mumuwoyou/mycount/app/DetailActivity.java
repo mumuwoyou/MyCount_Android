@@ -137,7 +137,12 @@ public class DetailActivity extends AppCompatActivity {
         sum_value.setText(Integer.toString(result));
         StockModel stock = stockList.get(0);
         stock.setSum(result);
-        stock.update(stock.getId());//更新库存表
+        if (result > 0) {
+            stock.update(stock.getId());//更新库存表
+        }else
+        {
+            stock.save();
+        }
     }
 
     public void onClick(View v) {
@@ -207,6 +212,10 @@ public class DetailActivity extends AppCompatActivity {
                     Sum();
                     detailModels.clear();
                     detailModels.addAll(detailList);
+                    for(int i=0;i<lv_detail.getCount();i++) {
+                        View view = lv_detail.getChildAt(i);
+                        view.setBackgroundResource(R.color.white);
+                    }
                     adapter.notifyDataSetChanged();
                 }
                 break;

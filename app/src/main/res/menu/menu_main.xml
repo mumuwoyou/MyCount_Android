@@ -6,13 +6,12 @@
         android:id="@+id/menu_place"
         android:title="储位设置"
         app:showAsAction="collapseActionView"></item>
-
-    <item
-        android:id="@+id/menu_adb_update"
-        android:title="Adb上传"
-        app:showAsAction="collapseActionView"></item>
-    <item
-        android:id="@+id/menu_adb_download"
-        android:title="Adb下载"
-        app:showAsAction="collapseActionView"></item>
+<!--    <item-->
+<!--        android:id="@+id/menu_updatedb"-->
+<!--        android:title="更新数据库"-->
+<!--        app:showAsAction="collapseActionView"></item>-->
+<!--    <item-->
+<!--        android:id="@+id/menu_uploaddb"-->
+<!--        android:title="上传盘点数据"-->
+<!--        app:showAsAction="collapseActionView"></item>-->
 </menu>
