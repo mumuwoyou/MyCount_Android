@@ -202,10 +202,8 @@
             android:layout_width="50dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:inputType="number"
-            android:padding="3dip"
-            android:text="1"
-            tools:text="1"></EditText>
+            android:inputType="numberSigned|number"
+            android:padding="3dip"></EditText>
     </LinearLayout>
 
     <LinearLayout android:id="@+id/LinearLayout09"

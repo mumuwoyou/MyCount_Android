@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/tv_code"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="273dp"
+        android:layout_marginStart="250dp"
         android:layout_marginTop="21dp"
         android:text="库存" />
 
@@ -35,7 +35,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="21dp"
-        android:layout_marginEnd="11dp"
+        android:layout_marginEnd="15dp"
         android:text="盘点" />
 
     <TextView
