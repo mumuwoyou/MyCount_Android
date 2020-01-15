@@ -43,6 +43,14 @@
             android:layout_weight="1"
             android:padding="3dip"
             android:text="删除"></Button>
+
+        <Button
+            android:id="@+id/setDefault"
+            android:layout_width="50dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dip"
+            android:text="默认" />
     </LinearLayout>
 
     <ListView

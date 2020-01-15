@@ -44,6 +44,7 @@ public class PlaceAdapter extends BaseAdapter {
             holder=new ViewHolder();
             holder.tv_place=convertView.findViewById(R.id.tv_place);
             holder.tv_id=convertView.findViewById(R.id.tv_id);
+            holder.tv_isdefault=convertView.findViewById(R.id.tv_isdefault);
             convertView.setTag(holder);
         }else{
             holder=(ViewHolder)convertView.getTag();
@@ -52,6 +53,7 @@ public class PlaceAdapter extends BaseAdapter {
 
         holder.tv_place.setText(detail.getPlace());
         holder.tv_id.setText(Integer.toString(detail.getId()));
+        holder.tv_isdefault.setText(detail.getIsdefault());
 
 
         // 设置隔行颜色
@@ -69,5 +71,6 @@ public class PlaceAdapter extends BaseAdapter {
     static class ViewHolder{
         TextView tv_place;
         TextView tv_id;
+        TextView tv_isdefault;
     }
 }

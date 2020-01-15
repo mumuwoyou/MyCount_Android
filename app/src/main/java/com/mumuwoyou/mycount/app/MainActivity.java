@@ -142,6 +142,8 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
 
 
+
+
     private class MyBroadcastReceiver extends BroadcastReceiver {
 
         public void onReceive(Context context, Intent intent) {
@@ -312,12 +314,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                 intent.setClass(MainActivity.this, PlaceActivity.class);
                 startActivity(intent);
                 break;
-//            case R.id.menu_updatedb:
-//                DownloadData();
-//                break;
-//            case R.id.menu_uploaddb:
-//                UploadData();
-//                break;
+
 
 
 

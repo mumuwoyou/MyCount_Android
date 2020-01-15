@@ -7,6 +7,8 @@ public class PlaceModel extends LitePalSupport {
 
     private String place;
 
+    private String isdefault;
+
     public int getId() {
         return id;
     }
@@ -22,4 +24,9 @@ public class PlaceModel extends LitePalSupport {
     public void setPlace(String place) {
         this.place = place;
     }
+
+    public String getIsdefault() { return  isdefault; }
+
+    public void  setIsdefault(String isdefault) { this.isdefault = isdefault; }
+
 }

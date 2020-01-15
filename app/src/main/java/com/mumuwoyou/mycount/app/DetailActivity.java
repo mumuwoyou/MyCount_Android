@@ -36,6 +36,7 @@ public class DetailActivity extends AppCompatActivity {
     private List<GoodsModel> goodsList;
     private List<StockModel> stockList;
     private List<PlaceModel> placeList;
+    private List<PlaceModel> defaultplace;
     private List<DetailModel> detailList;
     private List<DetailModel> detail_have;
 
@@ -71,7 +72,8 @@ public class DetailActivity extends AppCompatActivity {
         goodsList = LitePal.where("code = ?",code).find(GoodsModel.class);
         stockList = LitePal.where("code = ?", code).find(StockModel.class);
         detailList = LitePal.where("stockmodel_id = ?", Integer.toString(stockList.get(0).getId())).find(DetailModel.class);
-        placeList = LitePal.findAll(PlaceModel.class);
+        placeList = LitePal.where("isdefault != ?", "默认").find(PlaceModel.class);
+        defaultplace = LitePal.where("isdefault = ?", "默认").find(PlaceModel.class);
     }
     //初始化界面
     private  void initView()
@@ -99,6 +101,8 @@ public class DetailActivity extends AppCompatActivity {
         }
         comboBox = (ComboBox)this.findViewById(R.id.place_combo);
         ArrayList<Pair<String, String>> list = new ArrayList<>();
+        if (defaultplace.size() != 0)
+            list.add(new Pair<>(defaultplace.get(0).getPlace(),Integer.toString(defaultplace.get(0).getId()))); //先添加默认
         for(int i =0; i < placeList.size(); i++)
        {
             list.add(new Pair<>(placeList.get(i).getPlace(),Integer.toString(placeList.get(i).getId())));
@@ -149,6 +153,11 @@ public class DetailActivity extends AppCompatActivity {
 
         switch (v.getId()) {
             case R.id.add:
+                if (countEdit.getText().toString().equals(""))
+                {
+                    Toast.makeText(this, "数量不能为空", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 detail = new DetailModel();
                 detail.setPlace(comboBox.getSelectedEntry());
                 detail.setCount(Integer.parseInt(countEdit.getText().toString()));

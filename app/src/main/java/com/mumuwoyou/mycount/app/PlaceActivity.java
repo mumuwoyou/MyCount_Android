@@ -1,5 +1,6 @@
 package com.mumuwoyou.mycount.app;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.mumuwoyou.mycount.app.adapter.PlaceAdapter;
 import com.mumuwoyou.mycount.app.adapter.StockAdapter;
@@ -40,9 +42,11 @@ public class PlaceActivity extends AppCompatActivity {
 
         Button addButton = (Button)findViewById(R.id.add);
         Button deleteButton = (Button)findViewById(R.id.delete);
+        Button defaultButton = (Button)findViewById(R.id.setDefault);
         place_value = (EditText)findViewById(R.id.place_value);
         addButton.setOnClickListener(ButtonListener);
         deleteButton.setOnClickListener(ButtonListener);
+        defaultButton.setOnClickListener(ButtonListener);
 
         lv_place.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -64,6 +68,10 @@ public class PlaceActivity extends AppCompatActivity {
         refreshData();
     }
 
+    private Context getContext(){
+        return this;
+    }
+
     private void refreshData() {
         List<PlaceModel> allplace = LitePal.findAll(PlaceModel.class);
 
@@ -83,6 +91,11 @@ public class PlaceActivity extends AppCompatActivity {
 
             switch (v.getId()) {
                 case R.id.add:
+                    if (place_value.getText().toString().equals(""))
+                    {
+                        Toast.makeText(getContext(), "储位不能为空", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     PlaceModel place = new PlaceModel();
                     place.setPlace(place_value.getText().toString());
                     place.save();
@@ -91,6 +104,21 @@ public class PlaceActivity extends AppCompatActivity {
                 case R.id.delete:   //删除选择的数据。
                     if (place_select !=null) {
                         place_select.delete();
+                    }
+                    refreshData();
+                    break;
+
+                case R.id.setDefault: //设为默认。
+                    List<PlaceModel> allplace = LitePal.findAll(PlaceModel.class);
+                    if (place_select != null){
+                        for(int i =0; i < allplace.size(); i++)
+                        {
+                            allplace.get(i).setIsdefault("");
+                            allplace.get(i).save();
+                        }
+                        place_select.setIsdefault("默认");
+                        place_select.save();
+
                     }
                     refreshData();
                     break;
