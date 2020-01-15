@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private static final int REQUEST_PERMISSION_CODE = 1;
 
 
-    private  static  String DB_NAME= "testdb.db";
+    private  static  String DB_NAME= "mycount.db";
 
     private static String packageName = "com.mumuwoyou.mycount.app";
 
@@ -421,7 +421,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         boolean success = false;
 
         try {
-            LitePal.deleteDatabase("testdb");
+            LitePal.deleteDatabase("mycount");
             File documentDir = Environment.getExternalStorageDirectory();
             //pc端推送的地址
             String saveDir = documentDir.getAbsolutePath() + "/" + packageName + "/" + "dbfiles" + "/" + DB_NAME;
